@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Web App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav id="topbar">
+    <div class="topbar-left"><span class="app-title">Music App</span></div>
+    <div class="topbar-right">
+      <button id="theme-toggle" title="Toggle light/dark mode">🌙</button>
+      <button id="logout-btn" title="Logout">Logout</button>
+    </div>
+  </nav>
+  <div id="main-app" style="display:none;">
+    <aside id="sidebar">
+      <header class="sidebar-header">
+        <h1>My Playlist</h1>
+        <span id="song-count">32 songs</span>
+        <button id="add-songs-btn">+ Add Songs</button>
+      </header>
+      <ul id="playlist-view">
+        <!-- Songs will be dynamically inserted here -->
+      </ul>
+    </aside>
+    <main id="main-content">
+      <div class="desktop-columns">
+        <div class="left-col">
+          <section id="now-playing-section">
+            <div id="now-playing-info"></div>
+            <audio id="audio-player"></audio>
+            <div id="progress-container">
+              <span id="current-time">0:00</span>
+              <div id="progress-bar-bg">
+                <div id="progress-bar"></div>
+              </div>
+              <span id="duration">0:00</span>
+            </div>
+            <div id="player-controls">
+              <button id="prev-btn">⏮️</button>
+              <button id="play-btn">▶️</button>
+              <button id="pause-btn" style="display:none;">⏸️</button>
+              <button id="next-btn">⏭️</button>
+              <button id="repeat-btn">🔁</button>
+            </div>
+          </section>
+          <section id="playlist-section">
+            <h2>Playlists</h2>
+            <form id="create-playlist-form">
+              <input type="text" id="playlist-name" placeholder="New Playlist Name" required>
+              <button type="submit">Create Playlist</button>
+            </form>
+            <ul id="playlist-list"></ul>
+            <div id="playlist-songs"></div>
+          </section>
+        </div>
+        <div class="right-col">
+          <section id="library-section">
+            <h2>Song Library</h2>
+            <input type="text" id="search-bar" placeholder="Search songs...">
+            <ul id="song-list"></ul>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div id="auth-container">
+    <div id="login-form" class="auth-form">
+      <h2>Login</h2>
+      <input type="email" id="login-email" placeholder="Email">
+      <input type="password" id="login-password" placeholder="Password">
+      <button id="login-btn">Login</button>
+      <p>Don't have an account? <span id="show-register">Register</span></p>
+      <div class="auth-error" id="login-error"></div>
+    </div>
+    <div id="register-form" class="auth-form" style="display:none;">
+      <h2>Register</h2>
+      <input type="text" id="register-username" placeholder="Username">
+      <input type="email" id="register-email" placeholder="Email">
+      <input type="password" id="register-password" placeholder="Password">
+      <button id="register-btn">Register</button>
+      <p>Already have an account? <span id="show-login">Login</span></p>
+      <div class="auth-error" id="register-error"></div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html> 
