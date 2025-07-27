@@ -1,0 +1,16 @@
+{
+  "name": "music-app-frontend",
+  "version": "1.0.0",
+  "description": "Music App Frontend",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p $PORT -c-1",
+    "build": "echo 'No build step needed for static files'"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+} 

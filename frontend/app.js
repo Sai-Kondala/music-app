@@ -1,6 +1,7 @@
-// API URL - will be replaced during build for production
-// For Railway deployment, change this to: const API = 'https://your-app.up.railway.app/api';
-const API = 'http://localhost:5000/api';
+// API URL - automatically detects environment
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+  ? 'http://localhost:5000/api' 
+  : 'https://your-backend-app-name.onrender.com/api'; // Replace with your actual Render backend URL
 let token = localStorage.getItem('token') || '';
 let currentUser = null;
 let songs = [];
