@@ -15,13 +15,18 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Health check route
+app.get('/', (req, res) => {
+  res.json({ message: 'Music App Backend API is running!' });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/playlists', playlistRoutes);
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/musicapp', {
+mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/musicapp', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
