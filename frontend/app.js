@@ -1,7 +1,7 @@
 // API URL - automatically detects environment
 const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
   ? 'http://localhost:5000/api' 
-  : 'https://music-app-7dgw.onrender.com/api/songs';
+  : 'https://music-app-7dgw.onrender.com/api';
 let token = localStorage.getItem('token') || '';
 let currentUser = null;
 let songs = [];
