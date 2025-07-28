@@ -489,7 +489,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (!file) return;
       const formData = new FormData();
       formData.append('title', title);
-      formData.append('artist', artist);
+      formData.append('movie', artist);
       formData.append('audio', file);
       try {
         const res = await fetch(`${API}/songs/upload`, {
@@ -497,12 +497,25 @@ window.addEventListener('DOMContentLoaded', () => {
           headers: { Authorization: `Bearer ${token}` },
           body: formData
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
+        
+        // Log the response for debugging
+        console.log('Upload response status:', res.status);
+        const responseText = await res.text();
+        console.log('Upload response text:', responseText);
+        
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch (parseError) {
+          throw new Error(`Server returned invalid JSON: ${responseText}`);
+        }
+        
+        if (!res.ok) throw new Error(data.message || 'Upload failed');
         uploadMessage.textContent = 'Song uploaded!';
         fetchSongs();
         modalUploadForm.reset();
       } catch (err) {
+        console.error('Upload error:', err);
         uploadMessage.textContent = err.message;
       }
     };
