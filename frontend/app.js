@@ -57,8 +57,16 @@ window.addEventListener('DOMContentLoaded', () => {
   const addSongsBtn = document.getElementById('add-songs-btn');
   const songCount = document.getElementById('song-count');
   
-  // Show main app by default (no login required)
-  showMainApp();
+  // Check if user is already logged in
+  if (token) {
+    // User is logged in, show main app
+    showMainApp();
+    if (loginToggleBtn) loginToggleBtn.textContent = 'Logout';
+  } else {
+    // No login required, show main app by default
+    showMainApp();
+    if (loginToggleBtn) loginToggleBtn.textContent = 'Login';
+  }
 
   // All event listeners and logic go here, using these variables
   // Auth UI
@@ -149,6 +157,12 @@ window.addEventListener('DOMContentLoaded', () => {
   function showAuth() {
     if (authContainer) authContainer.style.display = 'block';
     if (mainApp) mainApp.style.display = 'none';
+    
+    // Reset login form and show login by default
+    if (loginForm) loginForm.style.display = 'block';
+    if (registerForm) registerForm.style.display = 'none';
+    if (loginError) loginError.textContent = '';
+    if (registerError) registerError.textContent = '';
   }
 
   // Fetch and display real song count from folder
