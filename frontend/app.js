@@ -53,8 +53,12 @@ window.addEventListener('DOMContentLoaded', () => {
   const currentTimeSpan = document.getElementById('current-time');
   const durationSpan = document.getElementById('duration');
   const themeToggleBtn = document.getElementById('theme-toggle');
+  const loginToggleBtn = document.getElementById('login-toggle');
   const addSongsBtn = document.getElementById('add-songs-btn');
   const songCount = document.getElementById('song-count');
+  
+  // Show main app by default (no login required)
+  showMainApp();
 
   // All event listeners and logic go here, using these variables
   // Auth UI
@@ -77,6 +81,7 @@ window.addEventListener('DOMContentLoaded', () => {
         token = data.token;
         localStorage.setItem('token', token);
         currentUser = data.user;
+        if (loginToggleBtn) loginToggleBtn.textContent = 'Logout';
         showMainApp();
       } catch (err) {
         loginError.textContent = err.message || 'Login failed.';
@@ -100,7 +105,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (!res.ok) throw new Error(data.message);
         registerForm.style.display = 'none';
         loginForm.style.display = 'block';
-        loginError.textContent = 'Registration successful! Please login.';
+        alert('Registration successful! Please login.');
       } catch (err) {
         registerError.textContent = err.message;
       }
@@ -235,6 +240,24 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Login toggle functionality
+  if (loginToggleBtn) {
+    loginToggleBtn.onclick = () => {
+      if (!token) {
+        showAuth();
+      } else {
+        // If logged in, show logout option
+        if (confirm('Do you want to logout?')) {
+          token = '';
+          localStorage.removeItem('token');
+          currentUser = null;
+          showMainApp();
+          loginToggleBtn.textContent = 'Login';
+        }
+      }
+    };
+  }
+
   // Theme toggle logic (cleaned up)
   function setTheme(mode) {
     if (mode === 'light') {
@@ -366,6 +389,14 @@ window.addEventListener('DOMContentLoaded', () => {
       addBtn.style.fontSize = '1em';
       addBtn.onclick = (e) => {
         e.stopPropagation();
+        
+        // Check if user is logged in
+        if (!token) {
+          showAuth();
+          alert('Please login to add songs to playlists!');
+          return;
+        }
+        
         showAddToPlaylistDropdown(song, addBtn);
       };
       li.appendChild(addBtn);
@@ -414,6 +445,13 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   if (addSongsBtn) {
     addSongsBtn.onclick = () => {
+      // Check if user is logged in
+      if (!token) {
+        // Show login form when trying to add songs
+        showAuth();
+        alert('Please login to add songs!');
+        return;
+      }
       uploadModal.style.display = 'flex';
     };
   }
@@ -518,6 +556,14 @@ window.addEventListener('DOMContentLoaded', () => {
   if (createPlaylistForm) {
     createPlaylistForm.onsubmit = async (e) => {
       e.preventDefault();
+      
+      // Check if user is logged in
+      if (!token) {
+        showAuth();
+        alert('Please login to create playlists!');
+        return;
+      }
+      
       const name = playlistName.value;
       try {
         const res = await fetch(`${API}/playlists`, {
@@ -535,16 +581,40 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   async function fetchPlaylists() {
-    const res = await fetch(`${API}/playlists`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    playlists = await res.json();
-    renderPlaylists();
+    // Only fetch playlists if user is logged in
+    if (!token) {
+      playlists = [];
+      renderPlaylists();
+      return;
+    }
+    
+    try {
+      const res = await fetch(`${API}/playlists`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      playlists = await res.json();
+      renderPlaylists();
+    } catch (err) {
+      console.error('Error fetching playlists:', err);
+      playlists = [];
+      renderPlaylists();
+    }
   }
 
   function renderPlaylists() {
     if (!playlistList) return;
     playlistList.innerHTML = '';
+    
+    if (!token) {
+      playlistList.innerHTML = '<li style="color: #888; font-style: italic;">Login to create playlists</li>';
+      return;
+    }
+    
+    if (playlists.length === 0) {
+      playlistList.innerHTML = '<li style="color: #888; font-style: italic;">No playlists yet. Create one above!</li>';
+      return;
+    }
+    
     playlists.forEach((pl, i) => {
       const li = document.createElement('li');
       li.className = 'playlist-song';
